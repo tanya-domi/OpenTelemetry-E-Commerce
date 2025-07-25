@@ -1,0 +1,3 @@
+[submodule "opentelemetry-microservice"]
+	path = opentelemetry-microservice
+	url = https://github.com/open-telemetry/opentelemetry-demo.git
