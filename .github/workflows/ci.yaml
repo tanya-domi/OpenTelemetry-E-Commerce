@@ -12,9 +12,17 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-        - name: checkout code
+        - name: checkout target repo
           uses: actions/checkout@v4
+          with:
+                 submodules: true
+                 token: ${{ secrets.CI_TOKEN }}  
 
+        - name: Fix up git URLs
+          run: |
+                git config --global --add url."https://${{ secrets.GITHUB_SECRET }}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+                git config --global --add url."https://${{ secrets.GITHUB_SECRET }}:x-oauth-basic@github.com/".insteadOf "git@github.com:"
+                
         - name: Setup Go 1.22
           uses: actions/setup-go@v2
           with:
