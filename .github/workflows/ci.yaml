@@ -49,6 +49,7 @@ jobs:
     #         version: v1.55.2
     #         working-directory: src/product-catalog
     #         args: "--timeout=3m"
+    #
 
     docker:
         runs-on: ubuntu-latest
