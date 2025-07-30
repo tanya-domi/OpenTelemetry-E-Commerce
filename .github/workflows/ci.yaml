@@ -31,25 +31,25 @@ jobs:
             cd src/product-catalog
             go test ./...
     
-    # #code-quality:
-    #     runs-on: ubuntu-latest
+    code-quality:
+        runs-on: ubuntu-latest
 
-    #     steps:
-    #     - name: checkout code
-    #       uses: actions/checkout@v4
+        steps:
+        - name: checkout code
+          uses: actions/checkout@v4
         
-    #     - name: Setup Go 1.22
-    #       uses: actions/setup-go@v2
-    #       with:
-    #        go-version: 1.22
+        - name: Setup Go 1.22
+          uses: actions/setup-go@v2
+          with:
+           go-version: 1.22
         
-    #     - name: Run golangci-lint
-    #       uses: golangci/golangci-lint-action@v6
-    #       with:
-    #         version: v1.55.2
-    #         working-directory: src/product-catalog
-    #         args: "--timeout=3m"
-    #
+        - name: Run golangci-lint
+          uses: golangci/golangci-lint-action@v6
+          with:
+            version: v1.55.2
+            working-directory: src/product-catalog
+            args: "--timeout=3m"
+  
 
     docker:
         runs-on: ubuntu-latest
