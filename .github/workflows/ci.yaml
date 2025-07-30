@@ -3,7 +3,7 @@
 name: product-catalog-ci
 
 on: 
-    pull_request:
+    push:
         branches:
         - main
 
@@ -12,17 +12,9 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-        - name: checkout target repo
+        - name: checkout code
           uses: actions/checkout@v4
-          with:
-                 submodules: true
-                 token: ${{ secrets.CI_TOKEN }}  
 
-        - name: Fix up git URLs
-          run: |
-                git config --global --add url."https://${{ secrets.GITHUB_SECRET }}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
-                git config --global --add url."https://${{ secrets.GITHUB_SECRET }}:x-oauth-basic@github.com/".insteadOf "git@github.com:"
-                
         - name: Setup Go 1.22
           uses: actions/setup-go@v2
           with:
@@ -94,7 +86,7 @@ jobs:
         - name: checkout code
           uses: actions/checkout@v4
           with:
-            token: ${{ secrets.GITHUB_TOKEN }}
+            token: ${{ secrets.NEW_GITHUB_TOKEN }}
 
         - name: Update tag in kubernetes deployment manifest
           run: | 
@@ -102,8 +94,26 @@ jobs:
         
         - name: Commit and push changes
           run: |
-            git config --global user.email "abhishek@gmail.com"
-            git config --global user.name "Abhishek Veeramalla"
+            git config --global user.email "sheytanyadominic@gmail.com"
+            git config --global user.name "Dominic-tanya" 
             git add kubernetes/productcatalog/deploy.yaml
             git commit -m "[CI]: Update product catalog image tag"
             git push origin HEAD:main -f
+
+
+    slack-notification:
+      if: always()
+      name: Slack Notification
+      needs: [code-quality, docker, updatek8s]
+      continue-on-error: true
+      runs-on: ubuntu-latest
+      steps:
+      - uses: actions/checkout@v4
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_CHANNEL: github-actions-chennels
+          SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
+          SLACK_MESSAGE: ':hammer_and_wrench: Triggered by ${{github.actor}}'
+          SLACK_TITLE: Information
